@@ -49,19 +49,18 @@ public class InferenceEngine {
         return model;
     }
 
-    static public List<Object[]> getInferredClasses(String data, String schema, String target) {
+    static public List<String> getInferredClasses(String data, String schema, String target) {
         Model model = load(data);
         Model schema_model = load(schema);
         model.add(schema_model);
         Resource resource = model.getResource(target);
-        List<Object[]> list = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         model.listObjectsOfProperty(resource, RDF.type).forEach(v -> {
             if(v.isAnon()){
                 return;
             }
             String key = v.toString();
-            int count = model.listObjectsOfProperty((Resource) v, RDFS.subClassOf).toList().size();
-            list.add(new Object[]{count, key});
+            list.add(key);
         });
         return list;
     }

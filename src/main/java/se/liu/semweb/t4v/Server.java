@@ -1,9 +1,9 @@
 package se.liu.semweb.t4v;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,22 +26,19 @@ public class Server {
 
     @PostMapping("/api/types")
     public String getClasses(@RequestBody Message message) {
-        List<Object[]> map = InferenceEngine.getInferredClasses(message.getData(), message.getSchema(),message.getTarget());
+        List<String> list = InferenceEngine.getInferredClasses(message.getData(), message.getSchema(),
+                message.getTarget());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String jsonArray = gson.toJson(map);
-        return jsonArray;
+        return gson.toJson(list);
     }
 
-    @GetMapping("/api/owl2shacl")
-    public String getOwl2Shacl(@RequestParam(name = "data", required = true) String uri) {
-        String s = OWL2SHACL.owl2shacl(uri);
-        try {
-            FileWriter fw = new FileWriter(new File("test.ttl"));
-            fw.write(s);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return s;
+    @GetMapping(value = "/api/owl2shacl", produces = "application/json")
+    public String getOwl2Shacl(@RequestParam(name = "url", required = true) String url) {
+        Map<String, String> map = new HashMap<>();
+        String result = OWL2SHACL.owl2shacl(url);
+        map.put("result", result);
+        
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(map);
     }
 }

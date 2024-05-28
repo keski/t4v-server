@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Playground</title>
+    <link href="style.css" rel="stylesheet">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+</head>
+<header>
+    <h1>API Playground</h1>
+</header>
+
+<body>
+    <!-- Tab links -->
+    <div class="content">
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'owl2shacl')">GET /api/owl2shacl</button>
+            <button class="tablinks" onclick="openTab(event, 'types')">POST /api/types</button>
+        </div>
+
+        <div id="owl2shacl" class="tabcontent">
+            <form id="myform1">
+                <label>Ontology URL</label>
+                <input name="url" id="url" type="text" oninput="encode()"></input>
+                <label>Encoded URL</label>
+                <input type="text" id="encoded" disabled value="/api/owl2shacl?url=">
+                <label>Result</label>
+                <textarea id="result1"></textarea>
+                <input type="submit" form="myform1" value="Run" />
+            </form>
+
+        </div>
+
+        <div id="types" class="tabcontent">
+            <form id="myform2">
+                <label>Target</label>
+                <input id="target" name="target" type="text"></input>
+                <label>Data</label>
+                <textarea id="data" name="data"></textarea>
+                <label>Schema</label>
+                <textarea id="schema" name="schema"></textarea>
+                <label>Result</label>
+                <textarea id="result2"></textarea>
+                <input type="submit" form="myform2" value="Run" />
+            </form>
+
+
+        </div>
+    </div>
+
+
+
+</body>
+<script src="script.js"></script>
+
+</html>

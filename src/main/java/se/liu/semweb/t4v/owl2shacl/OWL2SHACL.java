@@ -68,23 +68,20 @@ public class OWL2SHACL {
     public static void main(String[] args) {
         String url = "https://raw.githubusercontent.com/LiUSemWeb/T4V/dev/ontology/flatglass/0.2/flatglass.ttl";
         String s = owl2shacl(url);
-        try {
-            FileWriter fw = new FileWriter(new File("test.ttl"));
-            fw.write(s);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        System.out.println(s);
     }
 
     public static String owl2shacl(String url) {
-        Model base = ModelFactory.createDefaultModel();
-        base.read(url, "TTL");
+        Model base;
+        try {
+            base = ModelFactory.createDefaultModel();
+            base.read(url, "TTL");
+        } catch (Exception e) {
+            return "Failed to load the ontology from the URL: " + url;
+        }
+
         OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, base);
-
         Model m = generate(model);
-
         StringWriter sq = new StringWriter();
         m.setNsPrefixes(base.getNsPrefixMap());
         m.setNsPrefix("sh", "http://www.w3.org/ns/shacl#");
