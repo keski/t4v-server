@@ -76,5 +76,5 @@ header {
 
 .CodeMirror {
   border: 1px solid #eee;
-  min-height: 200px;
+  resize: vertical;
 }

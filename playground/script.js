@@ -20,6 +20,15 @@ window.onload = () => {
         mode: "text/turtle"
     });
 
+    const observer1 = new ResizeObserver(() => editor1.refresh());
+    observer1.observe(editor1.getWrapperElement());
+
+    const observer2 = new ResizeObserver(() => editor2.refresh());
+    observer2.observe(editor2.getWrapperElement());
+
+    const observer3 = new ResizeObserver(() => editor3.refresh());
+    observer3.observe(editor3.getWrapperElement());
+
     target.value = "http://example.org/A";
     editor2.setValue(`
 @base <http://example.org/> .
@@ -104,7 +113,7 @@ function openTab(evt, tabName) {
 
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.classList.add("active");
-    
+
     editor1.refresh();
     editor2.refresh();
     editor3.refresh();
