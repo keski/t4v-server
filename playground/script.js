@@ -104,6 +104,7 @@ function openTab(evt, tabName) {
 
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.classList.add("active");
+    
     editor1.refresh();
     editor2.refresh();
     editor3.refresh();
