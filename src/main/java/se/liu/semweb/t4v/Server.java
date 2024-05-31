@@ -32,7 +32,7 @@ public class Server {
         return gson.toJson(list);
     }
 
-    @GetMapping(value = "/api/owl2shacl", produces = "application/json")
+    @GetMapping(value = "/api/owl2shacl", produces = {"text/turtle", "application/json"})
     public String getOwl2Shacl(@RequestParam(name = "url", required = true) String url, @RequestHeader Map<String, String> headers) {
         String result = OWL2SHACL.owl2shacl(url);
 
