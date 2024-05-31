@@ -64,7 +64,11 @@ function getShapes() {
     const encodedUrl = url + encodeURIComponent(ontologyUrl);
 
     editor1.setValue("Loading...");
-    fetch(encodedUrl)
+    fetch(encodedUrl, {
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
         .then(response => response.json())
         .then(result => {
             console.log(result["result"]);
