@@ -1,12 +1,27 @@
 const API_PREFIX = 'https://ontodeside.ida.liu.se/api';
+let editor1;
+let editor2;
+let editor3;
 
 window.onload = () => {
     const target = document.getElementById("target");
     const data = document.getElementById("data");
     const owl2shacl = document.getElementById("owl2shacl");
 
+    owl2shacl.style.display = "block";
+
+    editor1 = CodeMirror.fromTextArea(document.getElementById("result1"), {
+        mode: "text/turtle"
+    });
+    editor2 = CodeMirror.fromTextArea(document.getElementById("data"), {
+        mode: "text/turtle"
+    });
+    editor3 = CodeMirror.fromTextArea(document.getElementById("schema"), {
+        mode: "text/turtle"
+    });
+
     target.value = "http://example.org/A";
-    data.value = `
+    editor2.setValue(`
 @base <http://example.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
@@ -14,21 +29,18 @@ window.onload = () => {
     owl:imports <https://w3id.org/CEON/ontology/actor/0.2/> .
 <A> a <Vowel> .
 <Vowel> rdfs:subClassOf <Letter> .
-    `.trim();
-    owl2shacl.style.display = "block";
+    `.trim());
+
+    document.getElementById("myform1").onsubmit = (event) => {
+        event.preventDefault();
+        getShapes();
+    };
+
+    document.getElementById("myform2").onsubmit = (event) => {
+        event.preventDefault();
+        getTypes();
+    };
 }
-
-document.getElementById("myform1").onsubmit = (event) => {
-    event.preventDefault();
-    document.getElementById("result1").value = "Loading...";
-    getShapes();
-};
-
-document.getElementById("myform2").onsubmit = (event) => {
-    event.preventDefault();
-    document.getElementById("result2").value = "Loading...";
-    getTypes();
-};
 
 function encode() {
     const url = `${API_PREFIX}/owl2shacl?url=`;
@@ -42,10 +54,12 @@ function getShapes() {
     const ontologyUrl = document.getElementById("url").value;
     const encodedUrl = url + encodeURIComponent(ontologyUrl);
 
+    editor1.setValue("Loading...");
     fetch(encodedUrl)
         .then(response => response.json())
         .then(result => {
-            document.getElementById("result1").value = result["result"];
+            console.log(result["result"]);
+            editor1.setValue(result["result"]);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -66,14 +80,14 @@ function getTypes() {
         },
         body: JSON.stringify({ target, data, schema })
     })
-    .then(response => response.json())
-    .then(response => response.sort())
-    .then(sortedData => {
-        document.getElementById("result2").value = sortedData.join("\n");
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(response => response.sort())
+        .then(sortedData => {
+            document.getElementById("result2").value = sortedData.join("\n");
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 function openTab(evt, tabName) {
@@ -90,4 +104,7 @@ function openTab(evt, tabName) {
 
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.classList.add("active");
+    editor1.refresh();
+    editor2.refresh();
+    editor3.refresh();
 }
