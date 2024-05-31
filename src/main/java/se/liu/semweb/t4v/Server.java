@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import se.liu.semweb.t4v.owl2shacl.OWL2SHACL;
@@ -33,12 +33,20 @@ public class Server {
     }
 
     @GetMapping(value = "/api/owl2shacl", produces = "application/json")
-    public String getOwl2Shacl(@RequestParam(name = "url", required = true) String url) {
-        Map<String, String> map = new HashMap<>();
+    public String getOwl2Shacl(@RequestParam(name = "url", required = true) String url, @RequestHeader Map<String, String> headers) {
         String result = OWL2SHACL.owl2shacl(url);
-        map.put("result", result);
-        
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(map);
+
+        String acceptHeader = headers.get("accept");
+        if (acceptHeader != null && acceptHeader.equals("application/json")) {
+            // JSON
+            Map<String, String> map = new HashMap<>();
+            map.put("result", result);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            return gson.toJson(map);
+        } else {
+            // Plain text
+            return result;
+        }
+
     }
 }
